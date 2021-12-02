@@ -1,5 +1,6 @@
 package com.smarthost.SmartHost.controller;
 
+import java.text.DecimalFormat;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -68,13 +69,24 @@ public class CoreController {
 			allocatedEconomyOutput = (int)result4[1];
 		}
 		
-//		int allocatedPremiumOutput = allocatedPremium;
-//		int allocatedEconomyOutput = allocatedEconomy;
+		System.out.println("Line 72");
+		System.out.println(premiumUsage);
+		System.out.println(economyUsage);
 		
-//		allocatedEconomy = 0;
-//		allocatedPremium = 0;
+//		DecimalFormat df=new DecimalFormat("#.#");
+//		double d=127.70000;
+//		String s=df.format(d);
+//		System.out.println(s);
 		
-		return String.format("Usage premium: %d(EUR %.2f)\nUsage economy: %d(EUR %.2f)", allocatedPremiumOutput, premiumUsage, allocatedEconomyOutput, economyUsage);
+		String p  = (100 * premiumUsage) % 100 == 0 || (10 * premiumUsage) % 10 == 0  ? String.valueOf( (int) premiumUsage) : String.valueOf( premiumUsage);
+		String e = (100 * economyUsage) % 100 == 0 || (10 * economyUsage) % 10 == 0 ? String.valueOf((int) economyUsage) : String.valueOf(economyUsage);
+		
+//		return String.format("Usage premium: %d(EUR %f)\nUsage economy: %d(EUR %f)", allocatedPremiumOutput, premiumUsage, allocatedEconomyOutput, economyUsage);
+		
+		System.out.println("Formatted: " + convertToString(premiumUsage));
+		System.out.println("Stringify: " + p + "\t" + e);
+		
+		return String.format("Usage premium: %d(EUR %s)\nUsage economy: %d(EUR %s)", allocatedPremiumOutput, p, allocatedEconomyOutput, e);
 	}
 	
 	private double[] allocatePremium(double[] sortedOffers, int boundary, int count) {
@@ -113,6 +125,19 @@ public class CoreController {
 		
 		double[] output = {economyIncome, allocatedEconomy};
 		
+		return output;
+	}
+	
+	private String convertToString(double amount) {
+		String[] input = String.valueOf(amount).split(".");
+		
+		String output = "";
+		
+		if(input.length > 1) {System.out.println(input.length > 1);
+			output = input[1].equalsIgnoreCase("00") || input[1].equalsIgnoreCase("0") ? input[0] : String.valueOf(amount);
+		} else output = String.valueOf(amount);
+		
+		System.out.println("Output: " + output);
 		return output;
 	}
 }
